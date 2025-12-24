@@ -1,8 +1,16 @@
 
     // Theme toggle (placeholder for future implementation)
-    function toggleTheme() {
-        console.log('Theme toggle clicked');
-    }
+  function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute("data-theme") || "dark";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    html.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+
+    console.log("Theme changed to:", newTheme);
+}
+
 
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -107,26 +115,15 @@
     });
 
     // Add active nav link highlighting
-    window.addEventListener('scroll', () => {
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+ window.addEventListener('scroll', () => {
+    const header = document.querySelector('.header');
+    if (!header) return;
 
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (window.scrollY >= (sectionTop - 200)) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-    });
+    header.style.background =
+        window.scrollY > 100
+            ? 'rgba(var(--header-bg), 0.98)'
+            : 'rgba(var(--header-bg), 0.95)';
+});
 
     // Skills bars animation
     function animateSkillBars() {
@@ -210,3 +207,8 @@
         animateSkillBars();
         animateVSCode();
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+});
